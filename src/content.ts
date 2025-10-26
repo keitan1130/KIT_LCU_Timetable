@@ -1,5 +1,4 @@
 import { parseTimetableDOM, stringifyTimetable } from './shared/domParser';
-import type { ExportMessage, ExportOptions } from './shared/types';
 
 const BUTTON_ID = 'kit-timetable-export-btn';
 const PROCESSED_ATTR = 'data-kit-timetable-processed';
@@ -24,7 +23,7 @@ function insertExportButton(): void {
   const button = document.createElement('button');
   button.id = BUTTON_ID;
   button.className = 'c-btn c-btn-submit01 c-btn-export';
-  button.setAttribute('aria-label', '時間割をJSONでエクスポート');
+  button.setAttribute('aria-label', '時間割をJSON変換');
   button.setAttribute(PROCESSED_ATTR, 'true');
 
   button.innerHTML = `
@@ -33,9 +32,9 @@ function insertExportButton(): void {
     </span>
   `;
 
-  // クリックイベント: popup を開くメッセージを送信
+  // クリックイベント: 直接エクスポートを実行
   button.addEventListener('click', () => {
-    chrome.runtime.sendMessage({ type: 'openPopup' });
+    executeExport();
   });
 
   footer.appendChild(button);
@@ -45,33 +44,22 @@ function insertExportButton(): void {
 /**
  * エクスポートを実行
  */
-function executeExport(options: ExportOptions): void {
+function executeExport(): void {
   try {
-    const timetable = parseTimetableDOM(options);
-    const jsonText = stringifyTimetable(timetable, options.format);
+    const timetable = parseTimetableDOM();
+    const jsonText = stringifyTimetable(timetable);
 
-    if (options.outputType === 'download') {
-      // ダウンロード
-      const blob = new Blob([jsonText], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'timetable.json';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-      console.log('KIT_LCU_Timetable: JSON をダウンロードしました');
-    } else if (options.outputType === 'clipboard') {
-      // クリップボードにコピー
-      navigator.clipboard.writeText(jsonText).then(() => {
-        console.log('KIT_LCU_Timetable: JSON をクリップボードにコピーしました');
-        alert('時間割 JSON をクリップボードにコピーしました');
-      }).catch((err) => {
-        console.error('KIT_LCU_Timetable: クリップボードへのコピーに失敗しました', err);
-        alert('クリップボードへのコピーに失敗しました');
-      });
-    }
+    // ダウンロード
+    const blob = new Blob([jsonText], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'timetable.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    console.log('KIT_LCU_Timetable: JSON をダウンロードしました');
   } catch (error) {
     console.error('KIT_LCU_Timetable: エクスポート中にエラーが発生しました', error);
     alert('エクスポート中にエラーが発生しました。詳細はコンソールを確認してください。');
@@ -108,13 +96,6 @@ function init(): void {
   observer.observe(document.body, {
     childList: true,
     subtree: true,
-  });
-
-  // メッセージリスナー（popup からのエクスポート指示を受信）
-  chrome.runtime.onMessage.addListener((message: ExportMessage) => {
-    if (message.type === 'export') {
-      executeExport(message.options);
-    }
   });
 }
 

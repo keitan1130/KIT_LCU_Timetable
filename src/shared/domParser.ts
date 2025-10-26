@@ -1,22 +1,4 @@
-import type { TimetableEntry, DayOfWeek, TimetableJSON, ExportOptions } from './types';
-
-/**
- * RGB 文字列を HEX に変換
- * 例: "rgb(255, 107, 107)" → "#ff6b6b"
- */
-export function rgbToHex(rgb: string): string | undefined {
-  if (!rgb || rgb === '' || rgb === 'transparent') return undefined;
-
-  const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-  if (!match) return rgb.startsWith('#') ? rgb : undefined;
-
-  const r = parseInt(match[1], 10);
-  const g = parseInt(match[2], 10);
-  const b = parseInt(match[3], 10);
-
-  const toHex = (n: number) => n.toString(16).padStart(2, '0');
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
+import type { TimetableEntry, DayOfWeek, TimetableJSON } from './types';
 
 /**
  * 曜日インデックスから DayOfWeek への変換
@@ -37,47 +19,25 @@ const DAY_MAP: Record<number, DayOfWeek> = {
 function parseCellLi(
   li: HTMLElement,
   period: number,
-  dayOfWeek: DayOfWeek,
-  options: ExportOptions
+  dayOfWeek: DayOfWeek
 ): TimetableEntry | null {
   // 科目名を取得（h4 タグ）
   const subjectElement = li.querySelector('h4');
   const subject = subjectElement?.textContent?.trim();
   if (!subject) return null;
 
-  let teacher: string | undefined;
-  let classroom: string | undefined;
-  let memo: string | undefined;
+  // 教員名を取得（複数のセレクタを試す）
+  const teacherElement =
+    li.querySelector('p.teacher') ||
+    li.querySelector('p:not(.credits):not(.classroom-info)');
+  const teacher = teacherElement?.textContent?.trim();
 
-  if (options.includeMeta) {
-    // 教員名を取得（複数のセレクタを試す）
-    const teacherElement =
-      li.querySelector('p.teacher') ||
-      li.querySelector('p:not(.credits):not(.classroom-info)');
-    teacher = teacherElement?.textContent?.trim();
-
-    // 教室を取得
-    const classroomElement =
-      li.querySelector('span.classroom') ||
-      li.querySelector('p > span') ||
-      li.querySelector('.classroom-info');
-    classroom = classroomElement?.textContent?.trim();
-
-    // メモを取得
-    const memoElement = li.querySelector('.memo');
-    memo = memoElement?.textContent?.trim();
-  }
-
-  // 色情報を取得
-  let color: string | undefined;
-  if (li.dataset.color) {
-    color = li.dataset.color;
-  } else if (li.style.backgroundColor) {
-    color = rgbToHex(li.style.backgroundColor);
-  }
-  if (!color) {
-    color = options.defaultColor;
-  }
+  // 教室を取得
+  const classroomElement =
+    li.querySelector('span.classroom') ||
+    li.querySelector('p > span') ||
+    li.querySelector('.classroom-info');
+  const classroom = classroomElement?.textContent?.trim();
 
   return {
     dayOfWeek,
@@ -85,15 +45,13 @@ function parseCellLi(
     subject,
     teacher,
     classroom,
-    color,
-    memo,
   };
 }
 
 /**
  * schedule-table から TimetableJSON を生成
  */
-export function parseTimetableDOM(options: ExportOptions): TimetableJSON {
+export function parseTimetableDOM(): TimetableJSON {
   const table = document.querySelector('table.schedule-table');
   if (!table) {
     console.error('schedule-table が見つかりません');
@@ -125,22 +83,12 @@ export function parseTimetableDOM(options: ExportOptions): TimetableJSON {
 
       const lis = Array.from(cell.querySelectorAll('ul > li'));
 
-      if (lis.length === 0 && options.includeEmptyCells) {
-        // 空セルを含める場合
-        entries.push({
-          dayOfWeek,
-          period,
-          subject: '',
-          color: options.defaultColor,
-        });
-      } else {
-        lis.forEach((li) => {
-          const entry = parseCellLi(li as HTMLElement, period, dayOfWeek, options);
-          if (entry) {
-            entries.push(entry);
-          }
-        });
-      }
+      lis.forEach((li) => {
+        const entry = parseCellLi(li as HTMLElement, period, dayOfWeek);
+        if (entry) {
+          entries.push(entry);
+        }
+      });
     }
   });
 
@@ -148,11 +96,8 @@ export function parseTimetableDOM(options: ExportOptions): TimetableJSON {
 }
 
 /**
- * TimetableJSON を文字列に変換
+ * TimetableJSON を整形された文字列に変換
  */
-export function stringifyTimetable(timetable: TimetableJSON, format: 'pretty' | 'compact'): string {
-  if (format === 'pretty') {
-    return JSON.stringify(timetable, null, 2);
-  }
-  return JSON.stringify(timetable);
+export function stringifyTimetable(timetable: TimetableJSON): string {
+  return JSON.stringify(timetable, null, 2);
 }
