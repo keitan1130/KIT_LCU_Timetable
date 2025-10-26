@@ -1,0 +1,36 @@
+{
+    "manifest_version": 3,
+    "name": "KIT_LCU_Timetable",
+    "version": "0.0.1",
+    "description": "KITのLCUの時間割をjson形式に",
+    "icons": {
+        "128": "icons/icon.png"
+    },
+
+    "action": {
+        "default_popup": "src/popup/index.html",
+        "default_icon": "icons/icon.png"
+    },
+
+
+    "background": {
+        "service_worker": "src/background.ts"
+    },
+
+
+    "content_scripts": [
+        {
+        "matches": [
+            "https://virginia.jimu.kyutech.ac.jp/lcu-web/*"
+        ],
+        "js": ["src/content.ts"],
+        "run_at": "document_idle"
+        }
+    ],
+
+
+    "permissions": ["storage", "scripting", "activeTab"],
+    "host_permissions": [
+        "https://virginia.jimu.kyutech.ac.jp/lcu-web/*"
+    ]
+}
