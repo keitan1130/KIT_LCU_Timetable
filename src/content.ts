@@ -28,7 +28,7 @@ function insertExportButton(): void {
 
   button.innerHTML = `
     <span class="c-btn-link">
-      <span class="c-btn-text">時間割 JSON エクスポート</span>
+      <span class="c-btn-text">時間割JSON変換</span>
     </span>
   `;
 
