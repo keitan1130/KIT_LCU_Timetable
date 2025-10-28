@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "KIT_LCU_Timetable",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "KITのLCUの時間割をjson形式に",
     "icons": {
         "128": "icons/icon.png"
