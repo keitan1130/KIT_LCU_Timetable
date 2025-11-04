@@ -3,6 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/keitan1130/KIT_LCU_Timetable.git"
+  },
+  "homepage": "https://github.com/keitan1130/KIT_LCU_Timetable",
+  "bugs": {
+    "url": "https://github.com/keitan1130/KIT_LCU_Timetable/issues"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
