@@ -1,7 +1,7 @@
 # KIT LCU Timetable & Calendar Exporter
 
 [![GitHub](https://img.shields.io/badge/GitHub-keitan1130%2FKIT__LCU__Timetable-blue?logo=github)](https://github.com/keitan1130/KIT_LCU_Timetable)
-[![Version](https://img.shields.io/badge/version-1.0.2-green)](https://github.com/keitan1130/KIT_LCU_Timetable/releases)
+[![Version](https://img.shields.io/badge/version-1.0.3-green)](https://github.com/keitan1130/KIT_LCU_Timetable/releases)
 
 九州工業大学のLCU（Learning management system for Convenient Use）から時間割とカレンダーデータをエクスポートするChrome拡張機能です。
 
