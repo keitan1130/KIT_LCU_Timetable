@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "KIT_LCU_TimeCalendar",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "KITのLCUから時間割とカレンダーを出力",
     "homepage_url": "https://github.com/keitan1130/KIT_LCU_Timetable",
     "icons": {
