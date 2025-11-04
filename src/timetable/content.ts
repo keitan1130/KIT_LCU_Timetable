@@ -1,4 +1,4 @@
-import { parseTimetableDOM, stringifyTimetable } from '../shared/domParser';
+import { parseTimetableDOM, stringifyTimetable } from './domParser';
 
 const BUTTON_ID = 'kit-timetable-export-btn';
 const PROCESSED_ATTR = 'data-kit-timetable-processed';

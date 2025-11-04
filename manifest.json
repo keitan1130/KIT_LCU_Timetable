@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "KIT_LCU_TimeCalendar",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "KITのLCUから時間割とカレンダーを出力",
     "icons": {
         "128": "icons/icon.png"
@@ -14,9 +14,17 @@
     "content_scripts": [
         {
         "matches": [
-            "https://virginia.jimu.kyutech.ac.jp/lcu-web/*"
+            "https://virginia.jimu.kyutech.ac.jp/lcu-web/SC_07002B00_01/*",
+            "https://virginia.jimu.kyutech.ac.jp/lcu-web/SC_18001B00_13/*"
         ],
         "js": ["src/timetable/content.ts"],
+        "run_at": "document_idle"
+        },
+        {
+        "matches": [
+            "https://virginia.jimu.kyutech.ac.jp/lcu-web/SC_18001B00_02/*"
+        ],
+        "js": ["src/calendar/content.ts"],
         "run_at": "document_idle"
         }
     ],

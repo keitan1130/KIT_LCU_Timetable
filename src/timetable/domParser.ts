@@ -1,4 +1,4 @@
-import type { TimetableEntry, DayOfWeek, TimetableJSON } from './types';
+import type { TimetableEntry, DayOfWeek, TimetableJSON } from './timetableTypes';
 
 /**
  * 曜日インデックスから DayOfWeek への変換
