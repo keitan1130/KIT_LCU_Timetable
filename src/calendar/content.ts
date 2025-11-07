@@ -1,13 +1,13 @@
 import type { CalendarEntry, CalendarData } from './calendarTypes';
 
 /**
- * カレンダーページに「カレンダー出力」ボタンを追加し、
+ * カレンダーページに「CSVエクスポート」ボタンを追加し、
  * クリックされた際に当月の授業情報をCSV形式で出力する
  */
 
 // ボタンを挿入する関数
 function insertExportButton(): void {
-  console.log('カレンダー出力ボタンの挿入処理を開始');
+  console.log('CSVエクスポートボタンの挿入処理を開始');
 
   // 「追加」ボタンを検索
   const addButton = document.querySelector<HTMLButtonElement>(
@@ -19,13 +19,13 @@ function insertExportButton(): void {
     return;
   }
 
-  // 既に「カレンダー出力」ボタンが存在する場合はスキップ
+  // 既に「CSVエクスポート」ボタンが存在する場合はスキップ
   if (document.getElementById('calendar-export-btn')) {
-    console.log('「カレンダー出力」ボタンは既に存在します');
+    console.log('「CSVエクスポート」ボタンは既に存在します');
     return;
   }
 
-  // 「カレンダー出力」ボタンを作成
+  // 「CSVエクスポート」ボタンを作成
   const exportButton = document.createElement('button');
   exportButton.id = 'calendar-export-btn';
   exportButton.className = 'c-btn c-btn-submit01';
@@ -35,7 +35,7 @@ function insertExportButton(): void {
   // 内部構造を「追加」ボタンと同じにする
   exportButton.innerHTML = `
     <span class="c-btn-link">
-      <span class="c-btn-text">カレンダー出力</span>
+      <span class="c-btn-text">CSVエクスポート</span>
     </span>
   `;
 
@@ -44,12 +44,12 @@ function insertExportButton(): void {
 
   // 「追加」ボタンの直後に挿入
   addButton.after(exportButton);
-  console.log('「カレンダー出力」ボタンを挿入しました');
+  console.log('「CSVエクスポート」ボタンを挿入しました');
 }
 
 // エクスポート処理のハンドラー
 function handleExport(): void {
-  console.log('カレンダー出力ボタンがクリックされました');
+  console.log('CSVエクスポートボタンがクリックされました');
 
   try {
     // 当月のデータを抽出

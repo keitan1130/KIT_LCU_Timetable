@@ -23,12 +23,12 @@ function insertExportButton(): void {
   const button = document.createElement('button');
   button.id = BUTTON_ID;
   button.className = 'c-btn c-btn-submit01 c-btn-export';
-  button.setAttribute('aria-label', '時間割をJSON変換');
+  button.setAttribute('aria-label', 'JSONエクスポート');
   button.setAttribute(PROCESSED_ATTR, 'true');
 
   button.innerHTML = `
     <span class="c-btn-link">
-      <span class="c-btn-text">時間割JSON変換</span>
+      <span class="c-btn-text">JSONエクスポート</span>
     </span>
   `;
 
@@ -42,6 +42,49 @@ function insertExportButton(): void {
 }
 
 /**
+ * 年度とクォーター情報を取得してファイル名を生成
+ */
+function generateFileName(): string {
+  let year = new Date().getFullYear();
+  let quarter = 1;
+
+  // 年度を取得 (p class="year" から)
+  const yearElement = document.querySelector('p.year');
+  if (yearElement && yearElement.textContent) {
+    const yearMatch = yearElement.textContent.match(/(\d{4})/);
+    if (yearMatch) {
+      year = parseInt(yearMatch[1], 10);
+      console.log(`年度を取得: ${year}`);
+    }
+  }
+
+  // クォーターを取得 (class="is-active" を持つ a タグから)
+  const activeQuarter = document.querySelector('p.c-half-btn a.is-active');
+  if (activeQuarter && activeQuarter.textContent) {
+    // "１Ｑ", "２Ｑ", "３Ｑ", "４Ｑ" から数字を抽出
+    const quarterText = activeQuarter.textContent.trim();
+    const quarterMatch = quarterText.match(/[１２３４1234]/);
+    if (quarterMatch) {
+      const quarterChar = quarterMatch[0];
+      // 全角数字を半角に変換
+      const quarterMap: { [key: string]: number } = {
+        '１': 1, '1': 1,
+        '２': 2, '2': 2,
+        '３': 3, '3': 3,
+        '４': 4, '4': 4,
+      };
+      quarter = quarterMap[quarterChar] || 1;
+      console.log(`クォーターを取得: ${quarter}Q`);
+    }
+  }
+
+  // ファイル名を生成 (例: timetable_2025_3Q.json)
+  const fileName = `timetable_${year}_${quarter}Q.json`;
+  console.log(`生成するファイル名: ${fileName}`);
+  return fileName;
+}
+
+/**
  * エクスポートを実行
  */
 function executeExport(): void {
@@ -49,17 +92,20 @@ function executeExport(): void {
     const timetable = parseTimetableDOM();
     const jsonText = stringifyTimetable(timetable);
 
+    // ファイル名を生成
+    const fileName = generateFileName();
+
     // ダウンロード
     const blob = new Blob([jsonText], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'timetable.json';
+    a.download = fileName;
     document.body.appendChild(a);
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
-    console.log('KIT_LCU_Timetable: JSON をダウンロードしました');
+    console.log(`KIT_LCU_Timetable: JSON をダウンロードしました (${fileName})`);
   } catch (error) {
     console.error('KIT_LCU_Timetable: エクスポート中にエラーが発生しました', error);
     alert('エクスポート中にエラーが発生しました。詳細はコンソールを確認してください。');
