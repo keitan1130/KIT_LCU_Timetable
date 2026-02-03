@@ -114,7 +114,7 @@ ESLintでコードの静的解析を実行します。
 
 #### 主要な関数
 
-- **`insertExportButton()`**: 「カレンダー出力」ボタンをページに挿入
+- **`insertExportButton()`**: 「CSVエクスポート」ボタンをページに挿入
 - **`handleExport()`**: エクスポートボタンのクリックイベントハンドラー
 - **`scrapeCurrentMonthClasses()`**: 当月の授業データを抽出
   - FullCalendarの`data-date`属性から日付を取得
