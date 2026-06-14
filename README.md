@@ -6,6 +6,7 @@
 九州工業大学のLCUから時間割とカレンダーデータをエクスポートするChrome拡張機能です。
 
 **リポジトリ**: https://github.com/keitan1130/KIT_LCU_Timetable
+**Chromeウェブストア**: https://chromewebstore.google.com/detail/femlcphcbfolkpamdajklglnbbcihmhn
 
 ## 機能
 
